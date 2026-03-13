@@ -1,41 +1,55 @@
-export default async function handler(req, res) {
-  // Only allow POST
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+🌫️
+Vent.AI
+No advice unless you ask. No judgment. Just someone to listen — any hour, any feeling.
+I had the worst day
+I feel so overwhelmed
+Nobody gets it
+I just need to talk
+I'm so frustrated
+Something's been on my mind
+Choose your listener →
+Not a therapist or mental health service. Just a space to get things off your chest.
+STEP 2 OF 2
+How would you like to be heard?
+Pick the style that feels right for today. You can always switch.
+🫂
+The Empath
+Warm, soft, fully present. Just listens and validates without pushing.
+💪
+Tough Love
+Honest and direct. Cares enough to tell you what you need to hear.
+🙌
+Hype Friend
+In your corner, no matter what. Energy, encouragement, and good vibes.
+🧠
+The Realist
+Calm and logical. Helps you see the situation clearly without drama.
+☕
+Best Friend
+Casual, funny, a little sarcastic. Like venting to your closest friend.
+🎯
+The Coach
+Listens, then helps you figure out what to do next. Action-oriented.
+Start talking →
+← Back
+🌫️
+Vent.AI
 
-  const { system, messages } = req.body;
+listening
 
-  if (!messages || !Array.isArray(messages)) {
-    return res.status(400).json({ error: 'Invalid request' });
-  }
+New chat
 
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: system,
-        messages: messages
-      })
-    });
-
-    const data = await response.json();
-
-    // Extract the text and return it simply
-    const text = data?.content?.[0]?.text || null;
-
-    return res.status(200).json({ text });
-
-  } catch (error) {
-    console.error('API error:', error);
-    return res.status(500).json({ error: 'Something went wrong' });
-  }
-}
-
+Everything stays between you and Vent.AI
+10 left
+💬
+You've used your free messages
+You've had 10 free messages today. Upgrade to keep venting — unlimited, any time.
+Pay as you go
+100 messages, never expire
+$2.99
+Most popular
+Vent.AI Plus
+Unlimited messages + all personas
+$6/mo
+Get unlimited access →
+Resets tomorrow at midnight · Reset free messages (demo)
