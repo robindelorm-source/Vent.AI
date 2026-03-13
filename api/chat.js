@@ -31,7 +31,7 @@ export default async function handler(req, res) {
     // Extract the text and return it simply
     const text = data?.content?.[0]?.text || null;
 
-    return res.status(200).json({ text });
+    return res.status(200).json({ text, debug: data });
 
   } catch (error) {
     console.error('API error:', error);
