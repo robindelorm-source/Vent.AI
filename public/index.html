@@ -859,6 +859,89 @@
     text-underline-offset: 2px;
   }
 
+  /* ── TOPIC PICKER ── */
+  #topic-picker {
+    position: fixed;
+    inset: 0;
+    z-index: 95;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.8rem;
+    text-align: center;
+    padding: 2rem;
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  #topic-picker.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+
+  #topic-picker.hidden {
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+  }
+
+  .topic-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 540px;
+  }
+
+  @media (max-width: 480px) {
+    .topic-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .topic-card {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    position: relative;
+  }
+
+  .topic-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+  }
+
+  .topic-card.selected {
+    border-color: var(--accent);
+    background: var(--surface2);
+    box-shadow: 0 0 0 3px rgba(58,125,92,0.12);
+  }
+
+  .topic-emoji { font-size: 1.4rem; line-height: 1; }
+  .topic-name { font-size: 0.78rem; font-weight: 500; color: var(--text); }
+
+  .topic-skip {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: color 0.2s;
+  }
+
+  .topic-skip:hover { color: var(--text-soft); }
+
 </style>
 </head>
 <body>
@@ -878,13 +961,75 @@
     <div class="prompt-chip" onclick="startWithPrompt(this.textContent)">I'm so frustrated</div>
     <div class="prompt-chip" onclick="startWithPrompt(this.textContent)">Something's been on my mind</div>
   </div>
-  <button class="start-btn" onclick="goToPicker()">Choose your listener →</button>
+  <button class="start-btn" onclick="goToTopics()">Choose your listener →</button>
   <p class="disclaimer">Not a therapist or mental health service. Just a space to get things off your chest.</p>
+</div>
+
+<!-- TOPIC PICKER -->
+<div id="topic-picker">
+  <div class="picker-eyebrow">Step 2 of 3</div>
+  <div class="picker-title">What's on your mind?</div>
+  <p class="picker-sub">Pick a topic — or skip if you'd rather just talk.</p>
+
+  <div class="topic-grid">
+    <div class="topic-card" onclick="selectTopic(this, 'Grief & loss')">
+      <div class="topic-emoji">🕊️</div>
+      <div class="topic-name">Grief & loss</div>
+    </div>
+    <div class="topic-card" onclick="selectTopic(this, 'Anxiety')">
+      <div class="topic-emoji">😰</div>
+      <div class="topic-name">Anxiety</div>
+    </div>
+    <div class="topic-card" onclick="selectTopic(this, 'Relationships')">
+      <div class="topic-emoji">💔</div>
+      <div class="topic-name">Relationships</div>
+    </div>
+    <div class="topic-card" onclick="selectTopic(this, 'Work & career')">
+      <div class="topic-emoji">💼</div>
+      <div class="topic-name">Work & career</div>
+    </div>
+    <div class="topic-card" onclick="selectTopic(this, 'Uncertainty & change')">
+      <div class="topic-emoji">🌫️</div>
+      <div class="topic-name">Uncertainty</div>
+    </div>
+    <div class="topic-card" onclick="selectTopic(this, 'Loneliness')">
+      <div class="topic-emoji">🌧️</div>
+      <div class="topic-name">Loneliness</div>
+    </div>
+    <div class="topic-card" onclick="selectTopic(this, 'Family')">
+      <div class="topic-emoji">🏠</div>
+      <div class="topic-name">Family</div>
+    </div>
+    <div class="topic-card" onclick="selectTopic(this, 'Self-doubt')">
+      <div class="topic-emoji">🪞</div>
+      <div class="topic-name">Self-doubt</div>
+    </div>
+    <div class="topic-card" onclick="selectTopic(this, 'Anger & frustration')">
+      <div class="topic-emoji">🔥</div>
+      <div class="topic-name">Anger</div>
+    </div>
+    <div class="topic-card" onclick="selectTopic(this, 'Burnout & exhaustion')">
+      <div class="topic-emoji">🪫</div>
+      <div class="topic-name">Burnout</div>
+    </div>
+    <div class="topic-card" onclick="selectTopic(this, 'Health & body')">
+      <div class="topic-emoji">🫀</div>
+      <div class="topic-name">Health</div>
+    </div>
+    <div class="topic-card" onclick="selectTopic(this, 'Something else')">
+      <div class="topic-emoji">💬</div>
+      <div class="topic-name">Something else</div>
+    </div>
+  </div>
+
+  <button class="picker-continue-btn ready" id="topic-continue" onclick="goToPicker()">Next →</button>
+  <button class="topic-skip" onclick="goToPicker()">Skip — I'll just talk</button>
+  <button class="picker-back" onclick="goBackToLanding2()">← Back</button>
 </div>
 
 <!-- PERSONA PICKER -->
 <div id="persona-picker">
-  <div class="picker-eyebrow">Step 2 of 2</div>
+  <div class="picker-eyebrow">Step 3 of 3</div>
   <div class="picker-title">How would you like to be heard?</div>
   <p class="picker-sub">Pick the style that feels right for today. You can always switch.</p>
 
@@ -1155,6 +1300,7 @@ function devReset() {
 
 // ── APP STATE ─────────────────────────────────────────────
 let selectedPersona = null;
+let selectedTopic = null;
 let messages = [];
 let isThinking = false;
 let aiEmoji = '🌫️';
@@ -1175,14 +1321,34 @@ input.addEventListener('keydown', e => {
 });
 
 // ── NAVIGATION ────────────────────────────────────────────
-function goToPicker() {
+function goToTopics() {
   document.getElementById('landing').classList.add('hidden');
+  setTimeout(() => document.getElementById('topic-picker').classList.add('visible'), 100);
+}
+
+function goBackToLanding2() {
+  document.getElementById('topic-picker').classList.remove('visible');
+  setTimeout(() => document.getElementById('landing').classList.remove('hidden'), 100);
+}
+
+function selectTopic(card, topic) {
+  document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  selectedTopic = topic;
+}
+
+function goToPicker() {
+  document.getElementById('topic-picker').classList.add('hidden');
+  document.getElementById('topic-picker').classList.remove('visible');
   setTimeout(() => document.getElementById('persona-picker').classList.add('visible'), 100);
 }
 
 function goBackToLanding() {
   document.getElementById('persona-picker').classList.remove('visible');
-  setTimeout(() => document.getElementById('landing').classList.remove('hidden'), 100);
+  setTimeout(() => {
+    document.getElementById('topic-picker').classList.remove('hidden');
+    document.getElementById('topic-picker').classList.add('visible');
+  }, 100);
 }
 
 function selectPersona(card, key) {
@@ -1239,12 +1405,10 @@ function openChat() {
 }
 
 function startWithPrompt(text) {
-  goToPicker();
-  document.getElementById('picker-continue').onclick = () => {
-    openChat();
-    setTimeout(() => handleUserMessage(text), 800);
-    document.getElementById('picker-continue').onclick = openChat;
-  };
+  goToTopics();
+  document.getElementById('picker-continue').onclick = openChat;
+  // Store prompt to send after full flow
+  window._pendingPrompt = text;
 }
 
 function resetChat() {
@@ -1252,11 +1416,14 @@ function resetChat() {
   msgsInner.innerHTML = '';
   quickReplies.innerHTML = '';
   selectedPersona = null;
+  selectedTopic = null;
   hidePaywall();
   document.getElementById('persona-badge-wrap').innerHTML = '';
   document.getElementById('chat-app').classList.remove('visible');
   document.getElementById('persona-picker').classList.remove('hidden', 'visible');
+  document.getElementById('topic-picker').classList.remove('hidden', 'visible');
   document.querySelectorAll('.persona-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.topic-card').forEach(c => c.classList.remove('selected'));
   document.getElementById('picker-continue').classList.remove('ready');
   document.getElementById('picker-continue').onclick = openChat;
   setTimeout(() => document.getElementById('landing').classList.remove('hidden'), 300);
@@ -1350,7 +1517,8 @@ async function handleUserMessage(text) {
   addTypingIndicator();
 
   try {
-    const systemPrompt = PERSONAS[selectedPersona || 'empath'].prompt;
+    const systemPrompt = PERSONAS[selectedPersona || 'empath'].prompt +
+      (selectedTopic && selectedTopic !== 'Something else' ? `\n\nThe person has indicated they want to talk about: ${selectedTopic}. Keep this in mind but let them lead — don't force the topic if they go elsewhere.` : '');
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
