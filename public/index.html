@@ -247,6 +247,45 @@
 
   .settings-value:hover { border-color: var(--accent); }
 
+  .settings-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0.3rem 0.25rem;
+  }
+
+  .settings-toggle-group {
+    display: flex;
+    gap: 0.3rem;
+    padding: 0 0.25rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .settings-toggle {
+    flex: 1;
+    padding: 0.35rem 0;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-soft);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+
+  .settings-toggle:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .settings-toggle.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+    font-weight: 500;
+  }
+
   /* ── MAIN CONTENT AREA ── */
   #main-content {
     flex: 1;
@@ -1148,18 +1187,42 @@
     <div class="sidebar-footer">
       <div class="settings-panel" id="settings-panel">
         <div class="settings-title">Settings</div>
+
         <div class="settings-row">
           <span class="settings-label">Listener</span>
           <span class="settings-value" id="settings-persona-val" onclick="resetChat()">Change</span>
         </div>
+
         <div class="settings-row">
           <span class="settings-label">Messages left</span>
           <span class="settings-value" id="settings-msgs-val">10</span>
         </div>
+
         <div class="settings-row">
           <span class="settings-label">Plan</span>
           <span class="settings-value" onclick="showPaywall()">Free → Upgrade</span>
         </div>
+
+        <div class="settings-divider"></div>
+
+        <div class="settings-row">
+          <span class="settings-label">Response length</span>
+        </div>
+        <div class="settings-toggle-group" id="length-group">
+          <button class="settings-toggle active" onclick="setResponseLength('short', this)">Short</button>
+          <button class="settings-toggle" onclick="setResponseLength('medium', this)">Medium</button>
+          <button class="settings-toggle" onclick="setResponseLength('long', this)">Long</button>
+        </div>
+
+        <div class="settings-row" style="margin-top:0.4rem">
+          <span class="settings-label">Font size</span>
+        </div>
+        <div class="settings-toggle-group" id="font-group">
+          <button class="settings-toggle" onclick="setFontSize('small', this)">A</button>
+          <button class="settings-toggle active" style="font-size:1rem" onclick="setFontSize('medium', this)">A</button>
+          <button class="settings-toggle" style="font-size:1.1rem" onclick="setFontSize('large', this)">A</button>
+        </div>
+
       </div>
       <button class="settings-btn" onclick="toggleSettings()">
         <span>⚙️</span> Settings
@@ -1547,6 +1610,54 @@ function renderPersonaGrid() {
     card.onclick = () => selectPersona(card, key);
     grid.appendChild(card);
   });
+}
+
+// ── USER PREFERENCES ──────────────────────────────────────
+let responseLength = localStorage.getItem('ventai_length') || 'short';
+let fontSize = localStorage.getItem('ventai_fontsize') || 'medium';
+
+const RESPONSE_LENGTH_RULES = {
+  short: 'RESPONSE LENGTH: 1-2 sentences maximum. Short, human, conversational. Never write paragraphs.',
+  medium: 'RESPONSE LENGTH: 2-4 sentences maximum. Warm and conversational. Avoid long paragraphs.',
+  long: 'RESPONSE LENGTH: Up to 6 sentences if needed. Be thorough but still conversational.'
+};
+
+const FONT_SIZES = {
+  small: '0.82rem',
+  medium: '0.9rem',
+  large: '1rem'
+};
+
+function applyFontSize() {
+  document.getElementById('messages').style.fontSize = FONT_SIZES[fontSize];
+}
+
+function setResponseLength(val, btn) {
+  responseLength = val;
+  localStorage.setItem('ventai_length', val);
+  document.querySelectorAll('#length-group .settings-toggle').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setFontSize(val, btn) {
+  fontSize = val;
+  localStorage.setItem('ventai_fontsize', val);
+  document.querySelectorAll('#font-group .settings-toggle').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFontSize();
+}
+
+function restorePreferences() {
+  // Restore response length toggle
+  document.querySelectorAll('#length-group .settings-toggle').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.toLowerCase() === responseLength);
+  });
+  // Restore font size toggle
+  const fontLabels = { small: 0, medium: 1, large: 2 };
+  const fontBtns = document.querySelectorAll('#font-group .settings-toggle');
+  fontBtns.forEach(b => b.classList.remove('active'));
+  fontBtns[fontLabels[fontSize]]?.classList.add('active');
+  applyFontSize();
 }
 
 // ── SIDEBAR & SETTINGS ────────────────────────────────────
@@ -1980,8 +2091,12 @@ async function handleUserMessage(text) {
   addTypingIndicator();
 
   try {
-    const systemPrompt = PERSONAS[selectedPersona || 'empath'].prompt +
-      (selectedTopic && selectedTopic !== 'Something else' ? `\n\nThe person has indicated they want to talk about: ${selectedTopic}. Keep this in mind but let them lead — don't force the topic if they go elsewhere.` : '');
+    const basePrompt = PERSONAS[selectedPersona || 'empath'].prompt;
+    const lengthRule = RESPONSE_LENGTH_RULES[responseLength];
+    const systemPrompt = basePrompt.replace(
+      /RESPONSE LENGTH:.*?(?=\n\n|\n-)/s,
+      lengthRule
+    ) + (selectedTopic && selectedTopic !== 'Something else' ? `\n\nThe person has indicated they want to talk about: ${selectedTopic}. Keep this in mind but let them lead.` : '');
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -2023,6 +2138,7 @@ document.getElementById('picker-continue').onclick = openChat;
 updateCounter();
 renderSidebar();
 renderPersonaGrid();
+restorePreferences();
 </script>
 </body>
 </html>
