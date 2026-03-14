@@ -1489,6 +1489,118 @@ RESPONSE LENGTH: Keep replies to 1-2 sentences maximum. Direct and focused. Neve
   }
 };
 
+// ── PLUS PERSONAS ─────────────────────────────────────────
+const PLUS_PERSONAS = {
+  therapist: {
+    emoji: '🛋️', name: 'The Therapist',
+    prompt: `You are Vent.AI in "Therapist" mode — structured, reflective, and deeply attentive.
+
+RESPONSE LENGTH: Keep replies to 1-2 sentences maximum. Thoughtful and precise. Never write paragraphs.
+
+- Reflect patterns and themes you notice in what they share
+- Ask open-ended questions that help them explore their feelings deeper
+- Never diagnose or use clinical labels
+- Gently help them connect present feelings to possible underlying causes
+- Always validate before probing further`
+  },
+  philosopher: {
+    emoji: '🦉', name: 'The Philosopher',
+    prompt: `You are Vent.AI in "Philosopher" mode — big picture, reflective, reframing through a wider lens.
+
+RESPONSE LENGTH: Keep replies to 1-2 sentences maximum. Thoughtful but concise. Never write paragraphs.
+
+- Gently reframe their situation through a broader human or philosophical lens
+- Draw on wisdom traditions when useful, but keep it natural and accessible
+- Help them find meaning or perspective without dismissing their pain
+- Ask questions that open up new ways of seeing the situation
+- Be calm, curious, and a little poetic`
+  },
+  analyst: {
+    emoji: '🔬', name: 'The Analyst',
+    prompt: `You are Vent.AI in "Analyst" mode — logical, structured, and precise.
+
+RESPONSE LENGTH: Keep replies to 1-2 sentences maximum. Sharp and focused. Never write paragraphs.
+
+- Break situations down into clear components
+- Help separate emotions from facts without dismissing the emotions
+- Identify logical inconsistencies gently
+- Ask clarifying questions to understand the full picture
+- Avoid fluff — be direct and clear`
+  },
+  zenmaster: {
+    emoji: '🧘', name: 'Zen Master',
+    prompt: `You are Vent.AI in "Zen Master" mode — calm, grounding, present-focused.
+
+RESPONSE LENGTH: Keep replies to 1-2 sentences maximum. Slow, deliberate, peaceful. Never write paragraphs.
+
+- Bring the person into the present moment
+- Offer grounding, calming perspectives
+- Speak slowly and peacefully — no urgency
+- Gently encourage acceptance of what cannot be changed
+- Use simple, clear language. Less is more.`
+  },
+  romantic: {
+    emoji: '🌹', name: 'The Romantic',
+    prompt: `You are Vent.AI in "Romantic" mode — warm, poetic, and deeply emotionally expressive.
+
+RESPONSE LENGTH: Keep replies to 1-2 sentences maximum. Lyrical but brief. Never write paragraphs.
+
+- Respond with warmth and emotional richness
+- Speak to the beauty and depth of their feelings
+- Use occasional poetic or evocative language
+- Never minimise emotions — amplify their significance with care
+- Make them feel that what they feel truly matters`
+  },
+  lifecoach: {
+    emoji: '🚀', name: 'Life Coach',
+    prompt: `You are Vent.AI in "Life Coach" mode — energetic, forward-focused, and empowering.
+
+RESPONSE LENGTH: Keep replies to 1-2 sentences maximum. Punchy and motivating. Never write paragraphs.
+
+- Focus on growth, potential, and what's possible
+- Help them see challenges as opportunities
+- Ask powerful questions: "What would the best version of you do?"
+- Keep energy high and positive without being fake
+- Always believe in their ability to level up`
+  },
+  mentor: {
+    emoji: '🧓', name: 'The Mentor',
+    prompt: `You are Vent.AI in "Mentor" mode — wise, experienced, and quietly encouraging.
+
+RESPONSE LENGTH: Keep replies to 1-2 sentences maximum. Measured and warm. Never write paragraphs.
+
+- Speak with the calm authority of someone who has seen a lot
+- Share perspective that comes from experience, not just theory
+- Be honest but kind — like a trusted older figure
+- Help them see the longer arc of their situation
+- Never lecture — guide gently`
+  },
+  comedian: {
+    emoji: '😂', name: 'The Comedian',
+    prompt: `You are Vent.AI in "Comedian" mode — finding the funny side of life's chaos without dismissing real pain.
+
+RESPONSE LENGTH: Keep replies to 1-2 sentences maximum. Punchy and quick. Never write paragraphs.
+
+- Find the absurd, ironic, or funny angle where appropriate
+- Never mock the person — laugh with them, not at them
+- Use humour to lighten the load, not avoid the issue
+- Check in occasionally — if something is genuinely serious, dial back the comedy
+- Keep it witty and warm`
+  },
+  conspiracy: {
+    emoji: '👁️', name: 'Conspiracy Theorist',
+    prompt: `You are Vent.AI in "Conspiracy Theorist" mode — playfully finding the hidden forces behind everything.
+
+RESPONSE LENGTH: Keep replies to 1-2 sentences maximum. Dramatic and fun. Never write paragraphs.
+
+- Playfully suggest that their problems might be caused by shadowy forces, the system, or "big something"
+- Keep it clearly tongue-in-cheek and fun — never actually push harmful conspiracy theories
+- Validate their frustrations by externalising blame in an absurd, humorous way
+- Use dramatic language: "This is exactly what they want", "Have you considered that..."
+- Always keep it light and clearly comedic — this is a joke persona, not genuine misinformation`
+  }
+};
+
 // ── MESSAGE LIMIT ─────────────────────────────────────────
 const FREE_LIMIT = 10;
 const STORAGE_KEY = 'ventai_usage';
@@ -1586,7 +1698,10 @@ function devReset() {
 
 const PERSONA_COLORS = {
   empath: '#3a7d5c', toughlove: '#d97706', hype: '#2563eb',
-  realist: '#7c3aed', bestfriend: '#db2777', coach: '#0891b2'
+  realist: '#7c3aed', bestfriend: '#db2777', coach: '#0891b2',
+  therapist: '#0f766e', philosopher: '#7c3aed', analyst: '#374151',
+  zenmaster: '#0369a1', romantic: '#be185d', lifecoach: '#b45309',
+  mentor: '#92400e', comedian: '#d97706', conspiracy: '#4b5563'
 };
 
 const PERSONA_DESCS = {
@@ -1595,13 +1710,36 @@ const PERSONA_DESCS = {
   hype: 'In your corner, no matter what. Energy, encouragement, and good vibes.',
   realist: 'Calm and logical. Helps you see the situation clearly without drama.',
   bestfriend: 'Casual, funny, a little sarcastic. Like venting to your closest friend.',
-  coach: 'Listens, then helps you figure out what to do next. Action-oriented.'
+  coach: 'Listens, then helps you figure out what to do next. Action-oriented.',
+  therapist: 'Reflective and structured. Helps you unpack what\'s really going on.',
+  philosopher: 'Big picture thinking. Finds meaning in the chaos.',
+  analyst: 'Breaks everything down logically. Facts, patterns, clarity.',
+  zenmaster: 'Calm, grounding, present. Brings peace to the storm.',
+  romantic: 'Warm and poetic. Makes your feelings feel beautiful and valid.',
+  lifecoach: 'Forward-focused and energising. Turns problems into fuel.',
+  mentor: 'Wise and experienced. Quiet guidance from someone who\'s seen it all.',
+  comedian: 'Finds the funny side. Laughter as medicine.',
+  conspiracy: 'It\'s not your fault — they\'re all against you. Playful and absurd.'
+};
+
+const IS_PLUS_PERSONA = {
+  therapist: true, philosopher: true, analyst: true, zenmaster: true,
+  romantic: true, lifecoach: true, mentor: true, comedian: true, conspiracy: true
 };
 
 function renderPersonaGrid() {
   const grid = document.getElementById('persona-grid');
   if (!grid) return;
   grid.innerHTML = '';
+
+  const allPersonas = { ...PERSONAS, ...PLUS_PERSONAS };
+
+  // Free section
+  const freeLabel = document.createElement('div');
+  freeLabel.style.cssText = 'grid-column: 1/-1; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); font-weight: 500; padding: 0.2rem 0.1rem 0.1rem;';
+  freeLabel.textContent = 'Free';
+  grid.appendChild(freeLabel);
+
   Object.entries(PERSONAS).forEach(([key, p]) => {
     const card = document.createElement('div');
     card.className = 'persona-card';
@@ -1612,6 +1750,28 @@ function renderPersonaGrid() {
       <div class="persona-desc">${PERSONA_DESCS[key]}</div>
     `;
     card.onclick = () => selectPersona(card, key);
+    grid.appendChild(card);
+  });
+
+  // Plus section
+  const plusLabel = document.createElement('div');
+  plusLabel.style.cssText = 'grid-column: 1/-1; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); font-weight: 500; padding: 0.5rem 0.1rem 0.1rem; display: flex; align-items: center; gap: 0.4rem;';
+  plusLabel.innerHTML = 'Plus <span style="background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;font-size:0.6rem;padding:0.1rem 0.4rem;border-radius:99px;">✦ Upgrade</span>';
+  grid.appendChild(plusLabel);
+
+  Object.entries(PLUS_PERSONAS).forEach(([key, p]) => {
+    const card = document.createElement('div');
+    card.className = 'persona-card plus-locked';
+    card.style.setProperty('--card-color', PERSONA_COLORS[key]);
+    card.style.opacity = '0.6';
+    card.style.cursor = 'default';
+    card.innerHTML = `
+      <div style="position:absolute;top:0.5rem;right:0.5rem;font-size:0.65rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;padding:0.1rem 0.45rem;border-radius:99px;font-weight:500;">Plus</div>
+      <div class="persona-emoji">${p.emoji}</div>
+      <div class="persona-name">${p.name}</div>
+      <div class="persona-desc">${PERSONA_DESCS[key]}</div>
+    `;
+    card.onclick = () => showPaywall();
     grid.appendChild(card);
   });
 }
@@ -1763,7 +1923,7 @@ function renderSidebar() {
       <div class="convo-title">${isLocked ? '🔒 ' : ''}${convo.title}</div>
       <div class="convo-meta">
         <span>${convo.updatedAt}</span>
-        <span class="convo-persona">${PERSONAS[convo.persona]?.name || ''}</span>
+        <span class="convo-persona">${({...PERSONAS,...PLUS_PERSONAS})[convo.persona]?.name || ''}</span>
       </div>
     `;
     item.onclick = () => loadConversation(convo.id);
@@ -1791,7 +1951,7 @@ function loadConversation(id) {
   document.getElementById('chat-app').classList.add('visible');
 
   // Set persona badge
-  const p = PERSONAS[selectedPersona];
+  const p = ({...PERSONAS,...PLUS_PERSONAS})[selectedPersona] || PERSONAS.empath;
   aiEmoji = p?.emoji || '🌫️';
   document.getElementById('persona-badge-wrap').innerHTML =
     `<div class="persona-badge">${p?.emoji} ${p?.name}</div>`;
@@ -1914,7 +2074,6 @@ function goBackToLanding() {
 }
 
 function skipPersonaAndChat() {
-  // Pick a random persona
   const keys = Object.keys(PERSONAS);
   selectedPersona = keys[Math.floor(Math.random() * keys.length)];
   openChat();
@@ -1935,7 +2094,7 @@ function openChat() {
     picker.classList.remove('visible');
     if (!selectedPersona) selectedPersona = 'empath';
     document.getElementById('chat-app').classList.add('visible');
-    const p = PERSONAS[selectedPersona];
+    const p = ({...PERSONAS,...PLUS_PERSONAS})[selectedPersona] || PERSONAS.empath;
     document.getElementById('persona-badge-wrap').innerHTML =
       `<div class="persona-badge" >${p?.emoji} ${p?.name}</div>`;
     aiEmoji = p.emoji;
@@ -1952,7 +2111,7 @@ function openChat() {
   const app = document.getElementById('chat-app');
   app.classList.add('visible');
 
-  const p = PERSONAS[selectedPersona];
+  const p = ({...PERSONAS,...PLUS_PERSONAS})[selectedPersona] || PERSONAS.empath;
   document.getElementById('persona-badge-wrap').innerHTML =
     `<div class="persona-badge" >${p?.emoji} ${p?.name}</div>`;
   aiEmoji = p.emoji;
@@ -2095,7 +2254,8 @@ async function handleUserMessage(text) {
   addTypingIndicator();
 
   try {
-    const basePrompt = PERSONAS[selectedPersona || 'empath'].prompt;
+    const allPersonas = { ...PERSONAS, ...PLUS_PERSONAS };
+    const basePrompt = (allPersonas[selectedPersona || 'empath'] || PERSONAS.empath).prompt;
     const lengthRule = RESPONSE_LENGTH_RULES[responseLength];
     const systemPrompt = basePrompt.replace(
       /RESPONSE LENGTH:.*?(?=\n\n|\n-)/s,
