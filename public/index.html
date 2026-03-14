@@ -1766,22 +1766,36 @@ function renderPersonaGrid() {
 
   Object.entries(PLUS_PERSONAS).forEach(([key, p]) => {
     const card = document.createElement('div');
-    card.className = 'persona-card plus-locked';
+    const locked = !devMode;
+    card.className = 'persona-card' + (locked ? ' plus-locked' : '');
     card.style.setProperty('--card-color', PERSONA_COLORS[key]);
-    card.style.opacity = '0.6';
-    card.style.cursor = 'default';
+    if (locked) {
+      card.style.opacity = '0.6';
+      card.style.cursor = 'default';
+    }
     card.innerHTML = `
-      <div style="position:absolute;top:0.5rem;right:0.5rem;font-size:0.65rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;padding:0.1rem 0.45rem;border-radius:99px;font-weight:500;">Plus</div>
+      <div style="position:absolute;top:0.5rem;right:0.5rem;font-size:0.65rem;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;padding:0.1rem 0.45rem;border-radius:99px;font-weight:500;">${locked ? 'Plus' : '✓ Dev'}</div>
       <div class="persona-emoji">${p.emoji}</div>
       <div class="persona-name">${p.name}</div>
       <div class="persona-desc">${PERSONA_DESCS[key]}</div>
     `;
-    card.onclick = () => showPaywall();
+    card.onclick = locked ? () => showPaywall() : () => selectPersona(card, key);
     grid.appendChild(card);
   });
 }
 
-// ── USER PREFERENCES ──────────────────────────────────────
+// ── DEV MODE ──────────────────────────────────────────────
+let devMode = false;
+
+function checkDevMode(text) {
+  if (text.trim().toLowerCase() === 'devmode') {
+    devMode = true;
+    renderPersonaGrid();
+    addAIMessage("🔓 Dev mode activated — all Plus personas unlocked for this session.");
+    return true;
+  }
+  return false;
+}
 let responseLength = localStorage.getItem('ventai_length') || 'short';
 let fontSize = localStorage.getItem('ventai_fontsize') || 'medium';
 
@@ -2237,6 +2251,7 @@ function sendMessage() {
   input.style.height = 'auto';
   sendBtn.classList.remove('active');
   quickReplies.innerHTML = '';
+  if (checkDevMode(text)) return;
   handleUserMessage(text);
 }
 
