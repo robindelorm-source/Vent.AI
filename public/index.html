@@ -2124,10 +2124,15 @@ function openChat() {
 }
 
 function startWithPrompt(text) {
-  goToTopics();
-  document.getElementById('picker-continue').onclick = openChat;
-  // Store prompt to send after full flow
+  selectedTopic = null; // prompt chip replaces topic selection
+  document.getElementById('landing').classList.add('hidden');
+  setTimeout(() => document.getElementById('persona-picker').classList.add('visible'), 100);
   window._pendingPrompt = text;
+  document.getElementById('picker-continue').onclick = () => {
+    document.getElementById('picker-continue').onclick = () => openChat();
+    openChat();
+    setTimeout(() => handleUserMessage(text), 800);
+  };
 }
 
 function resetChat() {
