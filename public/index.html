@@ -2116,8 +2116,9 @@ async function handleUserMessage(text) {
     saveConversation();
 
     if (willHitLimit) {
-      // Let the final message land, then show paywall
-      setTimeout(() => showPaywall(), 1200);
+      // Don't show paywall yet — let them read the response.
+      // It will appear naturally when they try to type again.
+      quickReplies.innerHTML = '';
     } else {
       const msgCount = messages.filter(m => m.role === 'user').length;
       if (msgCount <= 3) {
