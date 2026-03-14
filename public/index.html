@@ -1436,6 +1436,19 @@
     <div class="prompt-chip" onclick="startWithPrompt(this.textContent)">Something's been on my mind</div>
   </div>
   <button class="start-btn" onclick="goToTopics()">Choose your listener →</button>
+
+  <div style="display:flex;align-items:center;gap:1.5rem;opacity:0;animation:fadeUp 0.8s ease 0.7s forwards;flex-wrap:wrap;justify-content:center;">
+    <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--muted);">
+      <span>🔒</span> Conversations are not stored on our servers
+    </div>
+    <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--muted);">
+      <span>🚫</span> No data is sold or disclosed to third parties
+    </div>
+    <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--muted);">
+      <span>📄</span> By continuing you accept our <span style="text-decoration:underline;text-underline-offset:2px;cursor:pointer;color:var(--accent)">Terms of Use</span>
+    </div>
+  </div>
+
   <p class="disclaimer">This AI provides a space to vent and talk things through, but it does not replace professional mental health support. If you need help, please contact a qualified professional or a trusted person in your life.</p>
 </div>
 
@@ -2477,9 +2490,37 @@ function openChat() {
       hype: "Hey!! So glad you're here. I'm ready to hear everything — what's up?",
       realist: "Hey. I'm here. What's the situation?",
       bestfriend: "Okay I'm here, I've got my coffee ☕ — spill everything. What happened?",
-      coach: "Hey, glad you reached out. I'm all ears — what's going on for you right now?"
+      coach: "Hey, glad you reached out. I'm all ears — what's going on for you right now?",
+      therapist: "Hello. I'm glad you reached out. This is a safe space — what's on your mind?",
+      philosopher: "Welcome. There's no rush here. What's weighing on you?",
+      analyst: "Hey. I'm here and I'm listening. What's the situation?",
+      zenmaster: "Take a breath. You're safe here. What would you like to share?",
+      lifecoach: "Hey, so glad you're here! This is your space. What's going on?",
+      mentor: "Good to have you here. Take your time — what's on your mind?"
     };
-    addAIMessage(greetings[selectedPersona]);
+
+    // Privacy note as a subtle system message
+    const privacyNote = document.createElement('div');
+    privacyNote.style.cssText = `
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.7rem;
+      color: var(--muted);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.45rem 0.85rem;
+      align-self: center;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      line-height: 1.5;
+      max-width: 420px;
+    `;
+    privacyNote.innerHTML = `🔒 This session is confidential. Conversations are not stored on our servers and are never disclosed to third parties.`;
+    msgsInner.appendChild(privacyNote);
+
+    addAIMessage(greetings[selectedPersona] || greetings.empath);
     setQuickReplies(["I don't know where to start", "It's been a lot lately", "I just need to vent"]);
 
     // Show topic in header
