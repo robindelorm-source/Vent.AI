@@ -1534,26 +1534,52 @@ function toggleSettings() {
   document.getElementById('settings-msgs-val').textContent = messagesRemaining() + ' left';
 }
 
-function saveConversation() {
+async function generateConvoTitle(msgs) {
+  try {
+    const summary = msgs
+      .filter(m => m.role === 'user')
+      .map(m => m.content)
+      .join(' | ');
+
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system: 'You generate ultra-short conversation titles. Given a series of messages, respond with ONLY a title of 4-6 words that captures the emotional theme or topic. No quotes, no punctuation at the end. Examples: "Struggling with work stress", "Missing someone I lost", "Feeling lost and uncertain".',
+        messages: [{ role: 'user', content: `Generate a title for this conversation: ${summary}` }]
+      })
+    });
+    const data = await response.json();
+    return data.text || null;
+  } catch {
+    return null;
+  }
+}
+
+async function saveConversation() {
   if (!messages.length) return;
   const userMsgs = messages.filter(m => m.role === 'user');
   if (!userMsgs.length) return;
 
-  // Generate title from first user message
-  const firstMsg = userMsgs[0].content;
-  const title = firstMsg.length > 40 ? firstMsg.slice(0, 40) + '…' : firstMsg;
   const p = PERSONAS[selectedPersona || 'empath'];
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
+  // Only generate AI title after 3+ user messages, otherwise use first message
+  let title;
+  if (userMsgs.length >= 3) {
+    title = await generateConvoTitle(messages) || userMsgs[0].content.slice(0, 40) + '…';
+  } else {
+    const firstMsg = userMsgs[0].content;
+    title = firstMsg.length > 40 ? firstMsg.slice(0, 40) + '…' : firstMsg;
+  }
+
   if (currentConvoId) {
-    // Update existing
     const idx = conversations.findIndex(c => c.id === currentConvoId);
     if (idx !== -1) {
       conversations[idx] = { ...conversations[idx], title, messages: [...messages], updatedAt: dateStr };
     }
   } else {
-    // New conversation
     currentConvoId = Date.now().toString();
     conversations.unshift({
       id: currentConvoId,
@@ -1565,7 +1591,6 @@ function saveConversation() {
       createdAt: dateStr,
       updatedAt: dateStr
     });
-    // Keep max 20 conversations
     if (conversations.length > 20) conversations = conversations.slice(0, 20);
   }
 
