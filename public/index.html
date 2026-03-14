@@ -2036,6 +2036,8 @@ function renderMobileSidebar() {
       </div>
     `;
     item.onclick = () => { loadConversation(convo.id); closeDrawer(); };
+    item.addEventListener('contextmenu', e => showContextMenu(e, convo.id));
+    addSwipeToDelete(item, convo.id);
     container.appendChild(item);
   });
 }
@@ -2117,17 +2119,139 @@ async function saveConversation() {
   renderSidebar();
 }
 
+function deleteConversation(id) {
+  conversations = conversations.filter(c => c.id !== id);
+  localStorage.setItem('ventai_convos', JSON.stringify(conversations));
+  if (currentConvoId === id) {
+    currentConvoId = null;
+    messages = [];
+    msgsInner.innerHTML = '';
+    quickReplies.innerHTML = '';
+  }
+  renderSidebar();
+  renderMobileSidebar();
+}
+
+// Context menu
+let contextMenu = null;
+
+function showContextMenu(e, convoId) {
+  e.preventDefault();
+  removeContextMenu();
+  const menu = document.createElement('div');
+  menu.id = 'convo-context-menu';
+  menu.style.cssText = `
+    position: fixed;
+    top: ${e.clientY}px;
+    left: ${e.clientX}px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.3rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    z-index: 99999;
+    min-width: 140px;
+    animation: cardPop 0.15s ease;
+  `;
+  menu.innerHTML = `
+    <div onclick="loadConversation('${convoId}');removeContextMenu()" style="padding:0.55rem 0.85rem;border-radius:7px;cursor:pointer;font-size:0.82rem;color:var(--text);display:flex;align-items:center;gap:0.5rem;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background=''"">
+      📂 Open
+    </div>
+    <div onclick="deleteConversation('${convoId}');removeContextMenu()" style="padding:0.55rem 0.85rem;border-radius:7px;cursor:pointer;font-size:0.82rem;color:#ef4444;display:flex;align-items:center;gap:0.5rem;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background=''">
+      🗑️ Delete
+    </div>
+  `;
+  document.body.appendChild(menu);
+  contextMenu = menu;
+  // Close on outside click
+  setTimeout(() => document.addEventListener('click', removeContextMenu, { once: true }), 50);
+}
+
+function removeContextMenu() {
+  const m = document.getElementById('convo-context-menu');
+  if (m) m.remove();
+  contextMenu = null;
+}
+
+// Swipe to delete
+function addSwipeToDelete(item, convoId) {
+  let startX = 0;
+  let currentX = 0;
+  let isSwiping = false;
+
+  item.addEventListener('touchstart', e => {
+    startX = e.touches[0].clientX;
+    isSwiping = false;
+  }, { passive: true });
+
+  item.addEventListener('touchmove', e => {
+    currentX = e.touches[0].clientX;
+    const diff = startX - currentX;
+    if (diff > 10) {
+      isSwiping = true;
+      const translate = Math.min(diff, 80);
+      item.style.transform = `translateX(-${translate}px)`;
+      item.style.transition = 'none';
+      // Show delete button
+      let btn = item.querySelector('.swipe-delete-btn');
+      if (!btn) {
+        btn = document.createElement('button');
+        btn.className = 'swipe-delete-btn';
+        btn.textContent = '🗑️';
+        btn.style.cssText = `
+          position: absolute;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          width: 70px;
+          background: #ef4444;
+          border: none;
+          color: white;
+          font-size: 1.1rem;
+          cursor: pointer;
+          border-radius: 0 10px 10px 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        `;
+        btn.onclick = (e) => { e.stopPropagation(); deleteConversation(convoId); };
+        item.style.position = 'relative';
+        item.style.overflow = 'visible';
+        item.parentNode.style.overflow = 'visible';
+        item.appendChild(btn);
+      }
+    }
+  }, { passive: true });
+
+  item.addEventListener('touchend', () => {
+    const diff = startX - currentX;
+    if (diff < 60) {
+      // Snap back
+      item.style.transition = 'transform 0.2s ease';
+      item.style.transform = 'translateX(0)';
+      const btn = item.querySelector('.swipe-delete-btn');
+      if (btn) setTimeout(() => btn.remove(), 200);
+    } else {
+      // Fully swiped — delete
+      item.style.transition = 'transform 0.2s ease, opacity 0.2s ease';
+      item.style.transform = 'translateX(-100%)';
+      item.style.opacity = '0';
+      setTimeout(() => deleteConversation(convoId), 200);
+    }
+  });
+}
+
 function renderSidebar() {
   const container = document.getElementById('sidebar-convos');
   const empty = document.getElementById('sidebar-empty');
 
   if (!conversations.length) {
     empty.style.display = 'block';
+    container.querySelectorAll('.convo-item').forEach(el => el.remove());
     return;
   }
 
   empty.style.display = 'none';
-  // Remove old convo items
   container.querySelectorAll('.convo-item').forEach(el => el.remove());
 
   conversations.forEach(convo => {
@@ -2143,6 +2267,8 @@ function renderSidebar() {
       </div>
     `;
     item.onclick = () => loadConversation(convo.id);
+    item.addEventListener('contextmenu', e => showContextMenu(e, convo.id));
+    addSwipeToDelete(item, convo.id);
     container.appendChild(item);
   });
 }
