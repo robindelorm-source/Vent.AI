@@ -56,9 +56,207 @@
     z-index: 0;
   }
 
+  /* ── APP SHELL ── */
+  #app-shell {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: row;
+    z-index: 10;
+  }
+
+  /* ── PERSISTENT SIDEBAR ── */
+  #app-sidebar {
+    width: 260px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    z-index: 10;
+  }
+
+  .sidebar-header {
+    padding: 1.2rem 1rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sidebar-brand {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+  }
+
+  .sidebar-brand em { font-style: italic; color: var(--accent); }
+
+  .new-chat-sidebar-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-soft);
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .new-chat-sidebar-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--surface2);
+  }
+
+  .sidebar-section {
+    padding: 0.75rem 0.75rem 0.3rem;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  .sidebar-conversations {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .sidebar-conversations::-webkit-scrollbar { width: 3px; }
+  .sidebar-conversations::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .convo-item {
+    padding: 0.6rem 0.75rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .convo-item:hover { background: var(--surface2); }
+  .convo-item.active { background: var(--surface2); border-left: 2px solid var(--accent); }
+
+  .convo-title {
+    font-size: 0.8rem;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 400;
+  }
+
+  .convo-meta {
+    font-size: 0.68rem;
+    color: var(--muted);
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .convo-persona {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.62rem;
+    color: var(--text-soft);
+  }
+
+  .sidebar-empty {
+    padding: 1.5rem 1rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  .sidebar-footer {
+    border-top: 1px solid var(--border);
+    padding: 0.5rem;
+  }
+
+  .settings-btn {
+    width: 100%;
+    padding: 0.65rem 0.75rem;
+    border-radius: 10px;
+    border: none;
+    background: transparent;
+    color: var(--text-soft);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: background 0.15s;
+    text-align: left;
+  }
+
+  .settings-btn:hover { background: var(--surface2); color: var(--text); }
+
+  .settings-panel {
+    display: none;
+    padding: 0.75rem;
+    border-top: 1px solid var(--border);
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .settings-panel.open { display: flex; }
+
+  .settings-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    font-weight: 500;
+    padding: 0 0.25rem;
+  }
+
+  .settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 0.5rem;
+    border-radius: 8px;
+  }
+
+  .settings-label { font-size: 0.78rem; color: var(--text-soft); }
+
+  .settings-value {
+    font-size: 0.72rem;
+    color: var(--accent);
+    font-weight: 500;
+    cursor: pointer;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.2rem 0.5rem;
+    transition: all 0.15s;
+  }
+
+  .settings-value:hover { border-color: var(--accent); }
+
+  /* ── MAIN CONTENT AREA ── */
+  #main-content {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+  }
+
   /* ── LANDING ── */
   #landing {
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: 100;
     display: flex;
@@ -157,7 +355,7 @@
 
   /* ── PERSONA PICKER ── */
   #persona-picker {
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: 90;
     display: flex;
@@ -347,13 +545,13 @@
     box-shadow: 0 8px 32px rgba(58,125,92,0.45);
   }
 
-  /* ── CHAT APP WITH SIDEBAR ── */
+  /* ── CHAT APP ── */
   #chat-app {
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: 50;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s;
@@ -364,195 +562,6 @@
     opacity: 1;
     transform: translateY(0);
     pointer-events: all;
-  }
-
-  /* ── SIDEBAR ── */
-  .sidebar {
-    width: 260px;
-    flex-shrink: 0;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    z-index: 10;
-  }
-
-  .sidebar-header {
-    padding: 1.2rem 1rem 0.8rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .sidebar-brand {
-    font-family: 'Fraunces', serif;
-    font-size: 1.1rem;
-    font-weight: 300;
-    letter-spacing: -0.01em;
-  }
-
-  .sidebar-brand em { font-style: italic; color: var(--accent); }
-
-  .new-chat-sidebar-btn {
-    width: 30px;
-    height: 30px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text-soft);
-    font-size: 1.1rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-
-  .new-chat-sidebar-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: var(--surface2);
-  }
-
-  .sidebar-section {
-    padding: 0.75rem 0.75rem 0.3rem;
-    font-size: 0.65rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    font-weight: 500;
-  }
-
-  .sidebar-conversations {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0.25rem 0.5rem;
-  }
-
-  .sidebar-conversations::-webkit-scrollbar { width: 3px; }
-  .sidebar-conversations::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  .convo-item {
-    padding: 0.6rem 0.75rem;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: background 0.15s;
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-
-  .convo-item:hover { background: var(--surface2); }
-  .convo-item.active { background: var(--surface2); border-left: 2px solid var(--accent); }
-
-  .convo-title {
-    font-size: 0.8rem;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-weight: 400;
-  }
-
-  .convo-meta {
-    font-size: 0.68rem;
-    color: var(--muted);
-    display: flex;
-    gap: 0.4rem;
-    align-items: center;
-  }
-
-  .convo-persona {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 99px;
-    padding: 0.1rem 0.4rem;
-    font-size: 0.62rem;
-    color: var(--text-soft);
-  }
-
-  .sidebar-empty {
-    padding: 1.5rem 1rem;
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.78rem;
-    line-height: 1.5;
-  }
-
-  /* Sidebar footer - settings */
-  .sidebar-footer {
-    border-top: 1px solid var(--border);
-    padding: 0.5rem;
-  }
-
-  .settings-btn {
-    width: 100%;
-    padding: 0.65rem 0.75rem;
-    border-radius: 10px;
-    border: none;
-    background: transparent;
-    color: var(--text-soft);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.82rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    transition: background 0.15s;
-    text-align: left;
-  }
-
-  .settings-btn:hover { background: var(--surface2); color: var(--text); }
-
-  /* Settings panel */
-  .settings-panel {
-    display: none;
-    padding: 0.75rem;
-    border-top: 1px solid var(--border);
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .settings-panel.open { display: flex; }
-
-  .settings-title {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--muted);
-    font-weight: 500;
-    padding: 0 0.25rem;
-  }
-
-  .settings-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.4rem 0.5rem;
-    border-radius: 8px;
-  }
-
-  .settings-label {
-    font-size: 0.78rem;
-    color: var(--text-soft);
-  }
-
-  .settings-value {
-    font-size: 0.72rem;
-    color: var(--accent);
-    font-weight: 500;
-    cursor: pointer;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 0.2rem 0.5rem;
-    transition: all 0.15s;
-  }
-
-  .settings-value:hover {
-    border-color: var(--accent);
   }
 
   /* ── CHAT MAIN AREA ── */
@@ -1038,7 +1047,7 @@
 
   /* ── TOPIC PICKER ── */
   #topic-picker {
-    position: fixed;
+    position: absolute;
     inset: 0;
     z-index: 95;
     display: flex;
@@ -1122,6 +1131,43 @@
 </style>
 </head>
 <body>
+
+<div id="app-shell">
+
+  <!-- PERSISTENT SIDEBAR -->
+  <div id="app-sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-brand">Vent<em>.AI</em></div>
+      <button class="new-chat-sidebar-btn" onclick="resetChat()" title="New chat">+</button>
+    </div>
+    <div class="sidebar-section">Conversations</div>
+    <div class="sidebar-conversations" id="sidebar-convos">
+      <div class="sidebar-empty" id="sidebar-empty">Your conversations<br>will appear here</div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="settings-panel" id="settings-panel">
+        <div class="settings-title">Settings</div>
+        <div class="settings-row">
+          <span class="settings-label">Listener</span>
+          <span class="settings-value" id="settings-persona-val" onclick="resetChat()">Change</span>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">Messages left</span>
+          <span class="settings-value" id="settings-msgs-val">10</span>
+        </div>
+        <div class="settings-row">
+          <span class="settings-label">Plan</span>
+          <span class="settings-value" onclick="showPaywall()">Free → Upgrade</span>
+        </div>
+      </div>
+      <button class="settings-btn" onclick="toggleSettings()">
+        <span>⚙️</span> Settings
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="main-content">
 
 <!-- LANDING -->
 <div id="landing">
@@ -1249,42 +1295,6 @@
 
 <!-- CHAT APP -->
 <div id="chat-app">
-
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-brand">Vent<em>.AI</em></div>
-      <button class="new-chat-sidebar-btn" onclick="resetChat()" title="New chat">+</button>
-    </div>
-
-    <div class="sidebar-section">Conversations</div>
-    <div class="sidebar-conversations" id="sidebar-convos">
-      <div class="sidebar-empty" id="sidebar-empty">Your conversations will appear here</div>
-    </div>
-
-    <div class="sidebar-footer">
-      <div class="settings-panel" id="settings-panel">
-        <div class="settings-title">Settings</div>
-        <div class="settings-row">
-          <span class="settings-label">Listener</span>
-          <span class="settings-value" id="settings-persona-val" onclick="resetChat()">Change</span>
-        </div>
-        <div class="settings-row">
-          <span class="settings-label">Messages left</span>
-          <span class="settings-value" id="settings-msgs-val">10</span>
-        </div>
-        <div class="settings-row">
-          <span class="settings-label">Plan</span>
-          <span class="settings-value" onclick="showPaywall()">Free → Upgrade</span>
-        </div>
-      </div>
-      <button class="settings-btn" onclick="toggleSettings()">
-        <span>⚙️</span> Settings
-      </button>
-    </div>
-  </div>
-
-  <!-- MAIN CHAT -->
   <div class="chat-main">
     <div class="chat-header">
       <div class="header-left">
@@ -1353,6 +1363,9 @@
     <p class="paywall-reset">Resets tomorrow at midnight · <span onclick="devReset()">Reset free messages (demo)</span></p>
   </div>
 </div>
+
+  </div><!-- end main-content -->
+</div><!-- end app-shell -->
 
 <script>
 // ── PERSONAS ──────────────────────────────────────────────
