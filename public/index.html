@@ -2062,7 +2062,7 @@ function selectPersona(card, key) {
   document.querySelectorAll('.persona-card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
   selectedPersona = key;
-  document.getElementById('picker-continue').classList.add('ready');
+  setTimeout(() => openChat(), 300);
 }
 
 function openChat() {
