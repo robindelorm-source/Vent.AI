@@ -897,9 +897,151 @@
     width: 100%;
   }
 
-  /* Mobile — hide sidebar */
+  /* ── MOBILE ── */
   @media (max-width: 640px) {
-    .sidebar { display: none; }
+
+    /* Hide sidebar on mobile */
+    #app-sidebar { display: none; }
+
+    /* Main content fills full screen */
+    #main-content { width: 100%; }
+
+    /* Landing adjustments */
+    #landing { padding: 1.5rem 1.2rem; gap: 1.2rem; }
+    .brand { font-size: 3rem; }
+    .tagline { font-size: 0.92rem; }
+    .prompts-row { gap: 0.4rem; }
+    .prompt-chip { font-size: 0.78rem; padding: 0.4rem 0.85rem; }
+    .start-btn { padding: 0.8rem 2rem; font-size: 0.88rem; }
+    .disclaimer { font-size: 0.68rem; }
+
+    /* Topic picker */
+    .topic-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+    .topic-card { padding: 0.65rem 0.5rem; }
+    .topic-name { font-size: 0.7rem; }
+    .topic-emoji { font-size: 1.1rem; }
+
+    /* Persona picker */
+    .persona-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; max-width: 100%; }
+    .persona-card { padding: 0.8rem 0.7rem; }
+    .persona-desc { display: none; } /* hide desc on mobile to save space */
+    .picker-title { font-size: 1.4rem; }
+    #persona-picker { padding: 1.2rem; gap: 0.8rem; }
+    #topic-picker { padding: 1.2rem; gap: 0.8rem; }
+
+    /* Chat */
+    #messages { padding: 1rem 0.75rem; }
+    .input-wrap { padding: 0.6rem 0.75rem 1rem; }
+    .input-footer { font-size: 0.65rem; }
+    .msg-bubble { font-size: 0.85rem; padding: 0.7rem 0.9rem; }
+
+    /* Paywall */
+    .paywall-card { padding: 1.8rem 1.2rem; }
+    .paywall-title { font-size: 1.2rem; }
+
+    /* Hide desktop chat header on mobile */
+    .chat-header { display: none; }
+    #chat-mobile-topbar { display: flex !important; }
+    #mobile-topbar { display: flex !important; }
+  }
+
+  /* Mobile top bar — hidden on desktop */
+  #mobile-topbar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    z-index: 20;
+    flex-shrink: 0;
+  }
+
+  .mobile-brand {
+    font-family: 'Fraunces', serif;
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+  }
+
+  .mobile-brand em { font-style: italic; color: var(--accent); }
+
+  .mobile-menu-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-soft);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .mobile-menu-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Mobile slide-out drawer */
+  #mobile-drawer {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+  }
+
+  #mobile-drawer.open { display: block; }
+
+  .drawer-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(4px);
+  }
+
+  .drawer-panel {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    background: var(--surface);
+    display: flex;
+    flex-direction: column;
+    animation: slideIn 0.25s ease;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.12);
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+  }
+
+  .drawer-header {
+    padding: 1.2rem 1rem 0.8rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .drawer-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-soft);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   /* disclaimer */
@@ -1242,6 +1384,57 @@
   <!-- MAIN CONTENT -->
   <div id="main-content">
 
+  <!-- MOBILE TOP BAR -->
+  <div id="mobile-topbar">
+    <button class="mobile-menu-btn" onclick="openDrawer()">☰</button>
+    <div class="mobile-brand">Vent<em>.AI</em></div>
+    <button class="mobile-menu-btn" onclick="resetChat()" title="New chat">+</button>
+  </div>
+
+  <!-- MOBILE DRAWER -->
+  <div id="mobile-drawer">
+    <div class="drawer-backdrop" onclick="closeDrawer()"></div>
+    <div class="drawer-panel">
+      <div class="drawer-header">
+        <div class="sidebar-brand">Vent<em>.AI</em></div>
+        <button class="drawer-close" onclick="closeDrawer()">✕</button>
+      </div>
+      <div class="sidebar-section">Conversations</div>
+      <div class="sidebar-conversations" id="mobile-sidebar-convos">
+        <div class="sidebar-empty" id="mobile-sidebar-empty">Your conversations<br>will appear here</div>
+      </div>
+      <div class="sidebar-footer">
+        <div class="settings-panel" id="mobile-settings-panel">
+          <div class="settings-title">Settings</div>
+          <div class="settings-row">
+            <span class="settings-label">Messages left</span>
+            <span class="settings-value" id="mobile-settings-msgs-val">10</span>
+          </div>
+          <div class="settings-row">
+            <span class="settings-label">Plan</span>
+            <span class="settings-value" onclick="showPaywall();closeDrawer()">Free → Upgrade</span>
+          </div>
+          <div class="settings-divider"></div>
+          <div class="settings-row"><span class="settings-label">Response length</span></div>
+          <div class="settings-toggle-group" id="mobile-length-group">
+            <button class="settings-toggle active" onclick="setResponseLength('short', this)">Short</button>
+            <button class="settings-toggle" onclick="setResponseLength('medium', this)">Medium</button>
+            <button class="settings-toggle" onclick="setResponseLength('long', this)">Long</button>
+          </div>
+          <div class="settings-row" style="margin-top:0.4rem"><span class="settings-label">Font size</span></div>
+          <div class="settings-toggle-group" id="mobile-font-group">
+            <button class="settings-toggle" onclick="setFontSize('small', this)">A</button>
+            <button class="settings-toggle active" style="font-size:1rem" onclick="setFontSize('medium', this)">A</button>
+            <button class="settings-toggle" style="font-size:1.1rem" onclick="setFontSize('large', this)">A</button>
+          </div>
+        </div>
+        <button class="settings-btn" onclick="toggleMobileSettings()">
+          <span>⚙️</span> Settings
+        </button>
+      </div>
+    </div>
+  </div>
+
 <!-- LANDING -->
 <div id="landing">
   <div class="logo-mark">🌫️</div>
@@ -1339,6 +1532,12 @@
 <!-- CHAT APP -->
 <div id="chat-app">
   <div class="chat-main">
+    <!-- Mobile top bar inside chat -->
+    <div id="chat-mobile-topbar" style="display:none;align-items:center;justify-content:space-between;padding:0.75rem 1rem;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;">
+      <button class="mobile-menu-btn" onclick="openDrawer()">☰</button>
+      <div id="chat-mobile-persona" style="font-size:0.8rem;color:var(--text-soft);"></div>
+      <button class="mobile-menu-btn" onclick="resetChat()">+</button>
+    </div>
     <div class="chat-header">
       <div class="header-left">
         <div class="header-status">
@@ -1808,6 +2007,54 @@ function restorePreferences() {
   applyFontSize();
 }
 
+function openDrawer() {
+  const drawer = document.getElementById('mobile-drawer');
+  drawer.classList.add('open');
+  // Sync conversations to mobile drawer
+  renderMobileSidebar();
+  // Sync settings values
+  const rem = messagesRemaining();
+  const mMsgs = document.getElementById('mobile-settings-msgs-val');
+  if (mMsgs) mMsgs.textContent = rem + ' left';
+}
+
+function closeDrawer() {
+  document.getElementById('mobile-drawer').classList.remove('open');
+}
+
+function toggleMobileSettings() {
+  document.getElementById('mobile-settings-panel').classList.toggle('open');
+}
+
+function renderMobileSidebar() {
+  const container = document.getElementById('mobile-sidebar-convos');
+  const empty = document.getElementById('mobile-sidebar-empty');
+  if (!container) return;
+
+  if (!conversations.length) {
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  container.querySelectorAll('.convo-item').forEach(el => el.remove());
+
+  conversations.forEach(convo => {
+    const msgCount = convo.messages.filter(m => m.role === 'user').length;
+    const isLocked = msgCount >= 10 && messagesRemaining() === 0;
+    const item = document.createElement('div');
+    item.className = 'convo-item' + (convo.id === currentConvoId ? ' active' : '');
+    item.innerHTML = `
+      <div class="convo-title">${isLocked ? '🔒 ' : ''}${convo.title}</div>
+      <div class="convo-meta">
+        <span>${convo.updatedAt}</span>
+        <span class="convo-persona">${({...PERSONAS,...PLUS_PERSONAS})[convo.persona]?.name || ''}</span>
+      </div>
+    `;
+    item.onclick = () => { loadConversation(convo.id); closeDrawer(); };
+    container.appendChild(item);
+  });
+}
+
 // ── SIDEBAR & SETTINGS ────────────────────────────────────
 let conversations = JSON.parse(localStorage.getItem('ventai_convos') || '[]');
 let currentConvoId = null;
@@ -2099,6 +2346,15 @@ function openChat() {
   document.getElementById('persona-badge-wrap').innerHTML =
     `<div class="persona-badge" >${p?.emoji} ${p?.name}</div>`;
   aiEmoji = p.emoji;
+
+  // Show mobile chat topbar on small screens
+  const chatMobileBar = document.getElementById('chat-mobile-topbar');
+  if (chatMobileBar) {
+    chatMobileBar.style.display = window.innerWidth <= 640 ? 'flex' : 'none';
+    const mobilePersonaLabel = document.getElementById('chat-mobile-persona');
+    if (mobilePersonaLabel) mobilePersonaLabel.textContent = `${p?.emoji} ${p?.name}`;
+  }
+
   updateCounter();
 
   setTimeout(() => {
