@@ -2275,12 +2275,13 @@ async function handleUserMessage(text) {
 
   try {
     const allPersonas = { ...PERSONAS, ...PLUS_PERSONAS };
-    const basePrompt = (allPersonas[selectedPersona || 'empath'] || PERSONAS.empath).prompt;
+    const personaPrompt = (allPersonas[selectedPersona || 'empath'] || PERSONAS.empath).prompt;
     const lengthRule = RESPONSE_LENGTH_RULES[responseLength];
-    const systemPrompt = basePrompt.replace(
-      /RESPONSE LENGTH:.*?(?=\n\n|\n-)/s,
-      lengthRule
-    ) + (selectedTopic && selectedTopic !== 'Something else' ? `\n\nThe person has indicated they want to talk about: ${selectedTopic}. Keep this in mind but let them lead.` : '');
+    // Replace existing length rule or append it
+    const basePrompt = personaPrompt.includes('RESPONSE LENGTH:')
+      ? personaPrompt.replace(/RESPONSE LENGTH:.*?(?=\n\n|\n-)/s, lengthRule)
+      : lengthRule + '\n\n' + personaPrompt;
+    const systemPrompt = basePrompt + (selectedTopic && selectedTopic !== 'Something else' ? `\n\nThe person has indicated they want to talk about: ${selectedTopic}. Keep this in mind but let them lead.` : '');
     const response = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
