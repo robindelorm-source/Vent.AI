@@ -2029,11 +2029,11 @@ function renderMobileSidebar() {
     const item = document.createElement('div');
     item.className = 'convo-item' + (convo.id === currentConvoId ? ' active' : '');
     item.innerHTML = `
-      <div class="convo-title">${isLocked ? '🔒 ' : ''}${convo.title}</div>
-      <div class="convo-meta">
-        <span>${convo.updatedAt}</span>
-        <span class="convo-persona">${({...PERSONAS,...PLUS_PERSONAS})[convo.persona]?.name || ''}</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
+        <div class="convo-title" style="flex:1">${isLocked ? '🔒 ' : ''}${convo.title}</div>
+        <button class="convo-dots" onclick="event.stopPropagation();showContextMenu(event,'${convo.id}')" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:0.1rem 0.3rem;border-radius:6px;flex-shrink:0;-webkit-tap-highlight-color:transparent;">⋯</button>
       </div>
+      <div class="convo-meta"><span>${convo.updatedAt}</span></div>
     `;
     item.onclick = () => { loadConversation(convo.id); closeDrawer(); };
     item.addEventListener('contextmenu', e => showContextMenu(e, convo.id));
@@ -2260,12 +2260,14 @@ function renderSidebar() {
     const item = document.createElement('div');
     item.className = 'convo-item' + (convo.id === currentConvoId ? ' active' : '');
     item.innerHTML = `
-      <div class="convo-title">${isLocked ? '🔒 ' : ''}${convo.title}</div>
-      <div class="convo-meta">
-        <span>${convo.updatedAt}</span>
-        <span class="convo-persona">${({...PERSONAS,...PLUS_PERSONAS})[convo.persona]?.name || ''}</span>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
+        <div class="convo-title" style="flex:1">${isLocked ? '🔒 ' : ''}${convo.title}</div>
+        <button class="convo-dots" onclick="event.stopPropagation();showContextMenu(event,'${convo.id}')" style="background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;padding:0.1rem 0.3rem;border-radius:6px;flex-shrink:0;opacity:0;transition:opacity 0.15s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">⋯</button>
       </div>
+      <div class="convo-meta"><span>${convo.updatedAt}</span></div>
     `;
+    item.onmouseenter = () => item.querySelector('.convo-dots').style.opacity = '1';
+    item.onmouseleave = () => item.querySelector('.convo-dots').style.opacity = '0';
     item.onclick = () => loadConversation(convo.id);
     item.addEventListener('contextmenu', e => showContextMenu(e, convo.id));
     addSwipeToDelete(item, convo.id);
