@@ -30,7 +30,7 @@ export default async function handler(req, res) {
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
         system: system || 'You are a helpful assistant.',
-        messages: messages
+        messages: messages.filter(m => m.content && m.content.trim() !== '')
       })
     });
 
