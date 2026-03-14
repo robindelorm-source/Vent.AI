@@ -1324,7 +1324,7 @@
   <!-- PERSISTENT SIDEBAR -->
   <div id="app-sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-brand">Vent<em>.AI</em></div>
+      <div class="sidebar-brand"><div style="display:flex;align-items:center;gap:0.5rem;"><div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 36 36" fill="none"><path d="M18 4C10.268 4 4 9.82 4 17c0 3.48 1.42 6.64 3.74 9.02L6 32l6.44-2.14A14.6 14.6 0 0 0 18 30c7.732 0 14-5.82 14-13S25.732 4 18 4z" fill="white" fill-opacity="0.25"/><path d="M18 4C10.268 4 4 9.82 4 17c0 3.48 1.42 6.64 3.74 9.02L6 32l6.44-2.14A14.6 14.6 0 0 0 18 30c7.732 0 14-5.82 14-13S25.732 4 18 4z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="17" r="1.5" fill="white"/><circle cx="18" cy="17" r="1.5" fill="white"/><circle cx="24" cy="17" r="1.5" fill="white"/></svg></div>Vent<em>.AI</em></div></div>
       <button class="new-chat-sidebar-btn" onclick="resetChat()" title="New chat">+</button>
     </div>
     <div class="sidebar-section">Conversations</div>
@@ -1385,7 +1385,7 @@
     <div class="drawer-backdrop" onclick="closeDrawer()"></div>
     <div class="drawer-panel">
       <div class="drawer-header">
-        <div class="sidebar-brand">Vent<em>.AI</em></div>
+        <div class="sidebar-brand"><div style="display:flex;align-items:center;gap:0.5rem;"><div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="16" height="16" viewBox="0 0 36 36" fill="none"><path d="M18 4C10.268 4 4 9.82 4 17c0 3.48 1.42 6.64 3.74 9.02L6 32l6.44-2.14A14.6 14.6 0 0 0 18 30c7.732 0 14-5.82 14-13S25.732 4 18 4z" fill="white" fill-opacity="0.25"/><path d="M18 4C10.268 4 4 9.82 4 17c0 3.48 1.42 6.64 3.74 9.02L6 32l6.44-2.14A14.6 14.6 0 0 0 18 30c7.732 0 14-5.82 14-13S25.732 4 18 4z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/><circle cx="12" cy="17" r="1.5" fill="white"/><circle cx="18" cy="17" r="1.5" fill="white"/><circle cx="24" cy="17" r="1.5" fill="white"/></svg></div>Vent<em>.AI</em></div></div>
         <button class="drawer-close" onclick="closeDrawer()">✕</button>
       </div>
       <div class="sidebar-section">Conversations</div>
@@ -1424,7 +1424,17 @@
 
 <!-- LANDING -->
 <div id="landing">
-  <div class="logo-mark">🌫️</div>
+  <div class="logo-mark">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Speech bubble with a gentle wave inside -->
+      <path d="M18 4C10.268 4 4 9.82 4 17c0 3.48 1.42 6.64 3.74 9.02L6 32l6.44-2.14A14.6 14.6 0 0 0 18 30c7.732 0 14-5.82 14-13S25.732 4 18 4z" fill="white" fill-opacity="0.25"/>
+      <path d="M18 4C10.268 4 4 9.82 4 17c0 3.48 1.42 6.64 3.74 9.02L6 32l6.44-2.14A14.6 14.6 0 0 0 18 30c7.732 0 14-5.82 14-13S25.732 4 18 4z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+      <!-- Three dots indicating listening/thinking -->
+      <circle cx="12" cy="17" r="1.5" fill="white"/>
+      <circle cx="18" cy="17" r="1.5" fill="white"/>
+      <circle cx="24" cy="17" r="1.5" fill="white"/>
+    </svg>
+  </div>
   <div>
     <div class="brand">Vent<span>.AI</span></div>
   </div>
