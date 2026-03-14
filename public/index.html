@@ -1606,26 +1606,30 @@ function updateCounter() {
   const remaining = messagesRemaining();
   const pipsEl = document.getElementById('counter-pips');
   const textEl = document.getElementById('counter-text');
-  if (!pipsEl) return;
+  const counterEl = document.querySelector('.msg-counter');
+  if (!pipsEl || !counterEl) return;
 
+  // Hide completely unless 3 or fewer remain
+  if (remaining > 3) {
+    counterEl.style.visibility = 'hidden';
+    return;
+  }
+
+  counterEl.style.visibility = 'visible';
   pipsEl.innerHTML = '';
   for (let i = 0; i < FREE_LIMIT; i++) {
     const pip = document.createElement('div');
     const used = i >= remaining;
-    const lastFew = remaining <= 3 && !used;
-    pip.className = 'pip' + (used ? ' used' : '') + (lastFew ? ' last-few' : '');
+    pip.className = 'pip' + (used ? ' used' : ' last-few');
     pipsEl.appendChild(pip);
   }
 
   if (remaining === 0) {
     textEl.textContent = 'No messages left';
     textEl.style.color = '#ef4444';
-  } else if (remaining <= 3) {
-    textEl.textContent = `${remaining} left`;
-    textEl.style.color = '#f59e0b';
   } else {
-    textEl.textContent = `${remaining} left`;
-    textEl.style.color = '';
+    textEl.textContent = `${remaining} message${remaining === 1 ? '' : 's'} left`;
+    textEl.style.color = '#f59e0b';
   }
 }
 
