@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Vent.AI — Someone's always listening</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
@@ -899,100 +899,90 @@
 
   /* ── MOBILE ── */
   @media (max-width: 640px) {
-
-    /* Hide sidebar on mobile */
     #app-sidebar { display: none; }
-
-    /* Main content fills full screen */
     #main-content { width: 100%; }
 
-    /* Landing adjustments */
-    #landing { padding: 1.5rem 1.2rem; gap: 1.2rem; }
-    .brand { font-size: 3rem; }
+    /* Fix keyboard zoom — iOS zooms when font-size < 16px */
+    #user-input { font-size: 16px !important; }
+
+    /* Landing — scrollable */
+    #landing { padding: 1.5rem 1.2rem; gap: 1.2rem; overflow-y: auto; justify-content: flex-start; padding-top: 3rem; }
+    .brand { font-size: 2.8rem; }
     .tagline { font-size: 0.92rem; }
     .prompts-row { gap: 0.4rem; }
     .prompt-chip { font-size: 0.78rem; padding: 0.4rem 0.85rem; }
     .start-btn { padding: 0.8rem 2rem; font-size: 0.88rem; }
-    .disclaimer { font-size: 0.68rem; }
+    .disclaimer { font-size: 0.68rem; max-width: 100%; }
 
-    /* Topic picker */
+    /* Topic picker — scrollable */
+    #topic-picker { padding: 1rem; gap: 0.75rem; justify-content: flex-start; overflow-y: auto; padding-top: 1.5rem; }
     .topic-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
     .topic-card { padding: 0.65rem 0.5rem; }
     .topic-name { font-size: 0.7rem; }
     .topic-emoji { font-size: 1.1rem; }
 
-    /* Persona picker */
+    /* Persona picker — scrollable */
+    #persona-picker { padding: 1rem; gap: 0.75rem; justify-content: flex-start; overflow-y: auto; padding-top: 1.5rem; }
     .persona-grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; max-width: 100%; }
     .persona-card { padding: 0.8rem 0.7rem; }
-    .persona-desc { display: none; } /* hide desc on mobile to save space */
-    .picker-title { font-size: 1.4rem; }
-    #persona-picker { padding: 1.2rem; gap: 0.8rem; }
-    #topic-picker { padding: 1.2rem; gap: 0.8rem; }
+    .persona-desc { display: none; }
+    .picker-title { font-size: 1.3rem; }
+
+    /* Hide desktop header, show mobile topbar */
+    .chat-header { display: none; }
+    #chat-mobile-topbar { display: flex !important; }
 
     /* Chat */
     #messages { padding: 1rem 0.75rem; }
     .input-wrap { padding: 0.6rem 0.75rem 1rem; }
     .input-footer { font-size: 0.65rem; }
-    .msg-bubble { font-size: 0.85rem; padding: 0.7rem 0.9rem; }
+    .msg-bubble { font-size: 0.88rem; padding: 0.7rem 0.9rem; }
 
     /* Paywall */
-    .paywall-card { padding: 1.8rem 1.2rem; }
+    .paywall-card { padding: 1.8rem 1.2rem; margin: 0 0.5rem; }
     .paywall-title { font-size: 1.2rem; }
-
-    /* Hide desktop chat header on mobile */
-    .chat-header { display: none; }
-    #chat-mobile-topbar { display: flex !important; }
-    #mobile-topbar { display: flex !important; }
   }
 
-  /* Mobile top bar — hidden on desktop */
-  #mobile-topbar {
+  /* Mobile chat top bar — hidden on desktop */
+  #chat-mobile-topbar {
     display: none;
     align-items: center;
     justify-content: space-between;
     padding: 0.75rem 1rem;
     background: var(--surface);
     border-bottom: 1px solid var(--border);
-    position: relative;
-    z-index: 20;
     flex-shrink: 0;
+    z-index: 20;
   }
 
-  .mobile-brand {
-    font-family: 'Fraunces', serif;
-    font-size: 1rem;
-    font-weight: 300;
-    letter-spacing: -0.01em;
-  }
-
-  .mobile-brand em { font-style: italic; color: var(--accent); }
-
-  .mobile-menu-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+  .mobile-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
     border: 1px solid var(--border);
     background: transparent;
     color: var(--text-soft);
-    font-size: 1rem;
+    font-size: 1.1rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
-  .mobile-menu-btn:hover {
+  .mobile-icon-btn:active {
+    background: var(--surface2);
     border-color: var(--accent);
     color: var(--accent);
   }
 
-  /* Mobile slide-out drawer */
+  /* Mobile drawer */
   #mobile-drawer {
     display: none;
     position: fixed;
     inset: 0;
-    z-index: 500;
+    z-index: 9999;
   }
 
   #mobile-drawer.open { display: block; }
@@ -1000,8 +990,7 @@
   .drawer-backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.3);
-    backdrop-filter: blur(4px);
+    background: rgba(0,0,0,0.4);
   }
 
   .drawer-panel {
@@ -1010,11 +999,13 @@
     top: 0;
     bottom: 0;
     width: 280px;
+    max-width: 85vw;
     background: var(--surface);
     display: flex;
     flex-direction: column;
     animation: slideIn 0.25s ease;
-    box-shadow: 4px 0 24px rgba(0,0,0,0.12);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.15);
+    overflow: hidden;
   }
 
   @keyframes slideIn {
@@ -1023,25 +1014,28 @@
   }
 
   .drawer-header {
-    padding: 1.2rem 1rem 0.8rem;
+    padding: 1rem;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-shrink: 0;
   }
 
   .drawer-close {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     border-radius: 8px;
     border: 1px solid var(--border);
     background: transparent;
     color: var(--text-soft);
-    font-size: 1rem;
+    font-size: 0.9rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
   /* disclaimer */
@@ -1384,13 +1378,6 @@
   <!-- MAIN CONTENT -->
   <div id="main-content">
 
-  <!-- MOBILE TOP BAR -->
-  <div id="mobile-topbar">
-    <button class="mobile-menu-btn" onclick="openDrawer()">☰</button>
-    <div class="mobile-brand">Vent<em>.AI</em></div>
-    <button class="mobile-menu-btn" onclick="resetChat()" title="New chat">+</button>
-  </div>
-
   <!-- MOBILE DRAWER -->
   <div id="mobile-drawer">
     <div class="drawer-backdrop" onclick="closeDrawer()"></div>
@@ -1428,9 +1415,7 @@
             <button class="settings-toggle" style="font-size:1.1rem" onclick="setFontSize('large', this)">A</button>
           </div>
         </div>
-        <button class="settings-btn" onclick="toggleMobileSettings()">
-          <span>⚙️</span> Settings
-        </button>
+        <button class="settings-btn" onclick="toggleMobileSettings()">⚙️ Settings</button>
       </div>
     </div>
   </div>
@@ -1533,10 +1518,10 @@
 <div id="chat-app">
   <div class="chat-main">
     <!-- Mobile top bar inside chat -->
-    <div id="chat-mobile-topbar" style="display:none;align-items:center;justify-content:space-between;padding:0.75rem 1rem;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;">
-      <button class="mobile-menu-btn" onclick="openDrawer()">☰</button>
-      <div id="chat-mobile-persona" style="font-size:0.8rem;color:var(--text-soft);"></div>
-      <button class="mobile-menu-btn" onclick="resetChat()">+</button>
+    <div id="chat-mobile-topbar">
+      <button class="mobile-icon-btn" onclick="openDrawer()">☰</button>
+      <div id="chat-mobile-persona" style="font-size:0.8rem;color:var(--text-soft);font-family:'DM Sans',sans-serif;"></div>
+      <button class="mobile-icon-btn" onclick="resetChat()">+</button>
     </div>
     <div class="chat-header">
       <div class="header-left">
