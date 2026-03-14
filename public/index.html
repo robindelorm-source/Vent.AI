@@ -1883,13 +1883,9 @@ function addMessage(role, text) {
   const isUser = role === 'user';
   const row = document.createElement('div');
   row.className = `msg-row ${isUser ? 'user' : 'ai'}`;
-  const avatar = document.createElement('div');
-  avatar.className = 'msg-avatar';
-  avatar.textContent = isUser ? '👤' : aiEmoji;
   const bubble = document.createElement('div');
   bubble.className = 'msg-bubble';
   bubble.textContent = text;
-  row.appendChild(avatar);
   row.appendChild(bubble);
   msgsInner.appendChild(row);
   scrollToBottom();
@@ -1905,13 +1901,9 @@ function addTypingIndicator() {
   const row = document.createElement('div');
   row.className = 'msg-row ai';
   row.id = 'typing-row';
-  const avatar = document.createElement('div');
-  avatar.className = 'msg-avatar';
-  avatar.textContent = aiEmoji;
   const bubble = document.createElement('div');
   bubble.className = 'typing-bubble';
   bubble.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
-  row.appendChild(avatar);
   row.appendChild(bubble);
   msgsInner.appendChild(row);
   scrollToBottom();
