@@ -1591,8 +1591,8 @@
 <div id="paywall">
   <div class="paywall-card">
     <div class="paywall-icon">💬</div>
-    <div class="paywall-title">You've used your free messages</div>
-    <p class="paywall-sub">You've had 10 free messages today. Upgrade to keep venting — unlimited, any time.</p>
+    <div class="paywall-title">You've reached today's free messages</div>
+    <p class="paywall-sub">Come back tomorrow or unlock unlimited listening — any time, any feeling.</p>
 
     <div class="paywall-plans">
       <div class="plan-card" onclick="selectPlan(this)">
@@ -1852,8 +1852,8 @@ function showPaywallFromConvo() {
 }
 
 function showPaywall() {
-  document.querySelector('.paywall-title').textContent = "You've used your free messages";
-  document.querySelector('.paywall-sub').textContent = "You've had 10 free messages today. Upgrade to keep venting — unlimited, any time.";
+  document.querySelector('.paywall-title').textContent = "You've reached today's free messages";
+  document.querySelector('.paywall-sub').textContent = "Come back tomorrow or unlock unlimited listening — any time, any feeling.";
   document.getElementById('paywall').classList.add('visible');
   quickReplies.innerHTML = '';
   input.disabled = true;
