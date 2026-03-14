@@ -1,16 +1,21 @@
 export default async function handler(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { system, messages } = req.body;
 
-  if (!messages || !Array.isArray(messages)) {
-    return res.status(400).json({ error: 'Invalid request' });
-  }
+  const debugInfo = {
+    systemLength: system?.length || 0,
+    systemPreview: system?.slice(0, 80) || 'EMPTY',
+    messageCount: messages?.length || 0,
+    hasApiKey: !!process.env.ANTHROPIC_API_KEY
+  };
 
-  if (!system || system.trim() === '') {
-    return res.status(400).json({ error: 'Missing system prompt' });
+  if (!messages || !Array.isArray(messages)) {
+    return res.status(400).json({ error: 'Invalid request', debug: debugInfo });
   }
 
   try {
@@ -24,7 +29,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
-        system: system,
+        system: system || 'You are a helpful assistant.',
         messages: messages
       })
     });
@@ -32,10 +37,9 @@ export default async function handler(req, res) {
     const data = await response.json();
     const text = data?.content?.[0]?.text || null;
 
-    return res.status(200).json({ text });
+    return res.status(200).json({ text, debug: { ...debugInfo, anthropicError: data?.error || null } });
 
   } catch (error) {
-    console.error('API error:', error);
-    return res.status(500).json({ error: 'Something went wrong' });
+    return res.status(500).json({ error: error.message, debug: debugInfo });
   }
 }
