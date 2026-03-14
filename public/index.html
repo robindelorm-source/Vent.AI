@@ -1485,7 +1485,16 @@ function updateCounter() {
   }
 }
 
+function showPaywallFromConvo() {
+  // Update paywall text to explain why
+  document.querySelector('.paywall-title').textContent = "Continue this conversation";
+  document.querySelector('.paywall-sub').textContent = "Free accounts can only continue conversations with messages remaining. Upgrade to Vent.AI Plus to pick up any conversation where you left off — unlimited, any time.";
+  showPaywall();
+}
+
 function showPaywall() {
+  document.querySelector('.paywall-title').textContent = "You've used your free messages";
+  document.querySelector('.paywall-sub').textContent = "You've had 10 free messages today. Upgrade to keep venting — unlimited, any time.";
   document.getElementById('paywall').classList.add('visible');
   quickReplies.innerHTML = '';
   input.disabled = true;
@@ -1578,10 +1587,12 @@ function renderSidebar() {
   container.querySelectorAll('.convo-item').forEach(el => el.remove());
 
   conversations.forEach(convo => {
+    const msgCount = convo.messages.filter(m => m.role === 'user').length;
+    const isLocked = msgCount >= 10 && messagesRemaining() === 0;
     const item = document.createElement('div');
     item.className = 'convo-item' + (convo.id === currentConvoId ? ' active' : '');
     item.innerHTML = `
-      <div class="convo-title">${convo.title}</div>
+      <div class="convo-title">${isLocked ? '🔒 ' : ''}${convo.title}</div>
       <div class="convo-meta">
         <span>${convo.updatedAt}</span>
         <span class="convo-persona">${convo.personaEmoji} ${PERSONAS[convo.persona]?.name || ''}</span>
@@ -1595,6 +1606,9 @@ function renderSidebar() {
 function loadConversation(id) {
   const convo = conversations.find(c => c.id === id);
   if (!convo) return;
+
+  const msgCount = convo.messages.filter(m => m.role === 'user').length;
+  const isLocked = msgCount >= 10 && messagesRemaining() === 0;
 
   // Load the conversation
   currentConvoId = id;
@@ -1631,6 +1645,53 @@ function loadConversation(id) {
   renderSidebar();
   input.focus();
   scrollToBottom();
+
+  // If locked, disable input and show banner
+  if (isLocked) {
+    input.disabled = true;
+    input.placeholder = 'Upgrade to continue this conversation…';
+    sendBtn.classList.remove('active');
+    sendBtn.disabled = true;
+
+    // Show locked banner above input
+    const existingBanner = document.getElementById('locked-banner');
+    if (!existingBanner) {
+      const banner = document.createElement('div');
+      banner.id = 'locked-banner';
+      banner.style.cssText = `
+        background: var(--surface2);
+        border-top: 1px solid var(--border);
+        padding: 0.65rem 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.78rem;
+        color: var(--text-soft);
+      `;
+      banner.innerHTML = `
+        <span>🔒 This conversation has reached the free limit</span>
+        <button onclick="showPaywallFromConvo()" style="
+          padding: 0.35rem 0.9rem;
+          border-radius: 99px;
+          background: linear-gradient(135deg, var(--accent), var(--accent2));
+          color: white;
+          border: none;
+          font-size: 0.75rem;
+          font-family: 'DM Sans', sans-serif;
+          cursor: pointer;
+          font-weight: 500;
+        ">Upgrade to continue →</button>
+      `;
+      document.querySelector('.input-wrap').before(banner);
+    }
+  } else {
+    // Remove banner if exists and re-enable input
+    const banner = document.getElementById('locked-banner');
+    if (banner) banner.remove();
+    input.disabled = false;
+    input.placeholder = 'What\'s going on…';
+    sendBtn.disabled = false;
+  }
 }
 let selectedPersona = null;
 let selectedTopic = null;
@@ -1770,6 +1831,11 @@ function resetChat() {
   document.getElementById('picker-continue').classList.remove('ready');
   document.getElementById('picker-continue').onclick = openChat;
   document.getElementById('settings-panel').classList.remove('open');
+  const banner = document.getElementById('locked-banner');
+  if (banner) banner.remove();
+  input.disabled = false;
+  input.placeholder = "What's going on…";
+  sendBtn.disabled = false;
   renderSidebar();
   setTimeout(() => document.getElementById('landing').classList.remove('hidden'), 300);
 }
